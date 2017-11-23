@@ -68,7 +68,7 @@ class Request
 	 */
 	public function createRecord(array $record)
 	{
-		$response = $this->client->request('POST', '', ['form_params' => ['fields' => $record]]);
+		$response = $this->client->request('POST', '', ['json' => ['fields' => $record]]);
 		return new Response($response, $this);
 	}
 
@@ -82,7 +82,7 @@ class Request
 	 */
 	public function updateRecord($id, array $record)
 	{
-		$response = $this->client->request('PATCH', $this->getRequestUrl() . '/' . $id, ['form_params' => ['fields' => $record]]);
+		$response = $this->client->request('PATCH', $this->getRequestUrl() . '/' . $id, ['json' => ['fields' => $record]]);
 		return new Response($response, $this);
 	}
 
