@@ -1,0 +1,22 @@
+{
+    "name": "davidzadrazil/airtable-api-php",
+    "description": "PHP wrapper for Airtable API",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "php": ">=7.0.1",
+        "lib-curl": "*"
+    },
+    "authors": [
+        {
+            "name": "David Zadražil",
+            "email": "me@davidzadrazil.cz"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DavidZadrazil\\AirtableApi\\": "src/"
+        }
+    }
+}
