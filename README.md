@@ -50,7 +50,7 @@ $request->getTable(['pageSize' => 50, 'filterByFormula' => '{Name} = "test"']);
 
 ## Creating records
 ```php
-$response = $request->createEntry(
+$response = $request->createRecord(
   [
     'Name' => 'This appears in Name field',
     'Email' => 'john@doe.com',
