@@ -59,6 +59,19 @@ class Request
 		);
 	}
 
+    /**
+     * Retrieve a record.
+     *
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function retrieveRecord($id)
+    {
+        $response = $this->client->request('GET', $this->getRequestUrl() . '/' . $id);
+        return new Response($response, $this);
+    }
+
 	/**
 	 * Create new entry in record
 	 *
