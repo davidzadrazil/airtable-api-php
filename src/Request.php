@@ -60,13 +60,13 @@ class Request
 	}
 
     /**
-     * Retrieve a record.
+     * Read a record.
      *
      * @param string $id
      *
      * @return Response
      */
-    public function retrieveRecord($id)
+    public function readRecord($id)
     {
         $response = $this->client->request('GET', $this->getRequestUrl() . '/' . $id);
         return new Response($response, $this);
