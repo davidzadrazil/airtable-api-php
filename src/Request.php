@@ -59,18 +59,18 @@ class Request
 		);
 	}
 
-    /**
-     * Read a record.
-     *
-     * @param string $id
-     *
-     * @return Response
-     */
-    public function readRecord($id)
-    {
-        $response = $this->client->request('GET', $this->getRequestUrl() . '/' . $id);
-        return new Response($response, $this);
-    }
+	/**
+	 * Read a record.
+	 *
+	 * @param string $id
+	 *
+	 * @return Response
+	 */
+	public function readRecord($id)
+	{
+		$response = $this->client->request('GET', $this->getRequestUrl() . '/' . $id);
+		return new Response($response, $this);
+	}
 
 	/**
 	 * Create new entry in record
