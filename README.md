@@ -69,7 +69,6 @@ Reads specific record with given record ID.
 $response = $request->readRecord('recsH5WYbYpwWMlvb');
 $response->isSuccess(); // true / false
 $response->getRecords()[0]; // returns record with the given ID
-
 ```
 
 ## Updating records
