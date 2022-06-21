@@ -63,6 +63,14 @@ $response->getRecords(); // returns newly created record with ID
 
 ```
 
+## Reading one record
+Reads specific record with given record ID.
+```php
+$response = $request->readRecord('recsH5WYbYpwWMlvb');
+$response->isSuccess(); // true / false
+$response->getRecords()[0]; // returns record with the given ID
+```
+
 ## Updating records
 Updates specific record with given record ID.
 ```php
