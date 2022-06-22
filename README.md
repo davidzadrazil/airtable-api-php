@@ -33,9 +33,9 @@ Airtable limits response with maximum 100 records.
 $tableRequest = $request->getTable();
 do {
   foreach ($tableRequest->getRecords() as $record) {
-    echo $record->getName();
-    echo $record->getEmail();
-    echo $record->getAnotherValue();
+    echo $record->Name;
+    echo $record->Email;
+    echo $record->{'Date of Birth'};
   }
 } while ($tableRequest = $tableRequest->nextPage());
 ```
@@ -54,6 +54,7 @@ $response = $request->createRecord(
   [
     'Name' => 'This appears in Name field',
     'Email' => 'john@doe.com',
+    'Date of Birth' => '1/15/1980',
     'LinkToAnotherTable' => ['recsH5WYbYpwWMlvb']
   ]
 );
