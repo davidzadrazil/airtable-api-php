@@ -4,7 +4,7 @@ namespace DavidZadrazil\AirtableApi;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
-class Response
+abstract class Response
 {
 	/**
 	 * @var GuzzleResponse
@@ -22,16 +22,6 @@ class Response
 	private $success;
 
 	/**
-	 * @var array
-	 */
-	private $records = [];
-
-	/**
-	 * @var null
-	 */
-	public $offset = null;
-
-	/**
 	 * Response constructor.
 	 *
 	 * @param GuzzleResponse $response
@@ -42,25 +32,6 @@ class Response
 		$this->request = $request;
 		$this->response = $response;
 		$this->success = $response->getStatusCode() === 200 ? true : false;
-
-		$content = json_decode($response->getBody()->getContents());
-		if ($this->isSuccess() && json_last_error() === 0 && !empty($content) && !isset($content->deleted)) {
-			if (isset($content->records)) {
-				foreach ($content->records as $record) {
-					$this->records[] = new Record($record);
-				}
-			} else {
-				$this->records[] = new Record($content);
-			}
-
-			if (isset($content->offset)) {
-				$this->offset = $content->offset;
-			} else {
-				$this->offset = null;
-			}
-		} else {
-			$this->offset = null;
-		}
 	}
 
 	/**
@@ -69,29 +40,5 @@ class Response
 	public function isSuccess(): bool
 	{
 		return $this->success;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getRecords(): array
-	{
-		return $this->records;
-	}
-
-	/**
-	 * @return bool|Response
-	 */
-	public function nextPage()
-	{
-		if (is_null($this->offset)) {
-			return false;
-		}
-
-		if (empty($this->records)) {
-			return false;
-		}
-
-		return $this->request->getTable(array_merge($this->request->getParameters(), ['offset' => $this->offset]));
 	}
 }
