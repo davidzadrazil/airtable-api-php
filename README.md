@@ -23,14 +23,15 @@ $ composer require davidzadrazil/airtable-api-php
 First of all, you must initialize Airtable class and Request handler:
 ```php
 $airtable = new DavidZadrazil\AirtableApi\Airtable('API_KEY', 'BASE_ID');
-$request = new DavidZadrazil\AirtableApi\Request($airtable, 'TABLE_NAME');
+$recordRequest = new DavidZadrazil\AirtableApi\Request\RecordRequest($airtable, 'TABLE_NAME');
+$webhookRequest = new DavidZadrazil\AirtableApi\Request\WebhookRequest($airtable);
 ```
 
 ## Fetching records
 **Important**:
 Airtable limits response with maximum 100 records. 
 ```php
-$tableRequest = $request->getTable();
+$tableRequest = $recordRequest->getTable();
 do {
   foreach ($tableRequest->getRecords() as $record) {
     echo $record->getName();
@@ -45,12 +46,12 @@ do {
 ### Filtration & Other parameters
 Fetching records from table can be used with available parameters like `filterByFormula`, `maxRecords`, `pageSize`, `sort` or `view`.
 ```php
-$request->getTable(['pageSize' => 50, 'filterByFormula' => '{Name} = "test"']);
+$recordRequest->getTable(['pageSize' => 50, 'filterByFormula' => '{Name} = "test"']);
 ```
 
 ## Creating records
 ```php
-$response = $request->createRecord(
+$response = $recordRequest->createRecord(
   [
     'Name' => 'This appears in Name field',
     'Email' => 'john@doe.com',
@@ -66,13 +67,65 @@ $response->getRecords(); // returns newly created record with ID
 ## Updating records
 Updates specific record with given record ID.
 ```php
-$response = $request->updateRecord('recsH5WYbYpwWMlvb', ['Name' => 'Updated value']);
+$response = $recordRequest->updateRecord('recsH5WYbYpwWMlvb', ['Name' => 'Updated value']);
 $response->isSuccess(); // true / false
 ```
 
 ## Deleting records
 Delete specific record with given record ID.
 ```php
-$response = $request->deleteRecord('recsH5WYbYpwWMlvb');
+$response = $recordRequest->deleteRecord('recsH5WYbYpwWMlvb');
+$response->isSuccess(); // true / false
+```
+
+## Fetching webhooks
+```php
+$response = $webhookRequest->getWebhooks();
+foreach ($response->getWebhooks() as $webhook) {
+    echo $webhook->getSpecification();
+    echo $webhook->getNotificationUrl();
+    echo $webhook->getExpirationTime();
+}
+```
+
+`getWebhooks()` returns array of [AirtableApi\Webhook](https://github.com/DavidZadrazil/airtable-api-php/blob/master/src/Webhook.php).
+
+
+## Creating webhooks
+```php
+$response = $webhookRequest->createWebhook(
+  [
+    'notificationUrl' => 'https://foo.com/receive-ping',
+    'specification' => [
+        'options' => [
+            'filters' => [
+                'dataTypes' => [
+                    'tableData'
+                ],
+                'changeTypes' => [
+                    'add',
+                    'update',
+                ]
+            ]
+        ]
+    ]
+  ]
+);
+
+$response->isSuccess(); // true / false
+$response->getWebhooks(); // returns newly created webhook with ID
+```
+
+## Deleting webhooks
+Delete specific webhook with given webhook ID.
+```php
+$response = $webhookRequest->deleteWebhook('achWucoiR59qA9cRq');
+$response->isSuccess(); // true / false
+```
+
+## Refreshing webhooks
+Refresh specific webhook with given webhook ID.
+```php
+$response = $webhookRequest->refreshWebhook('achWucoiR59qA9cRq');
 $response->isSuccess(); // true / false
 ```
