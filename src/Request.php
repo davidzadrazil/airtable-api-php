@@ -11,38 +11,38 @@ use GuzzleHttp\Client;
  */
 abstract class Request
 {
-	/**
-	 * @var Airtable
-	 */
-	protected $airtable;
+    /**
+     * @var Airtable
+     */
+    protected $airtable;
 
-	/**
-	 * @var Client
-	 */
+    /**
+     * @var Client
+     */
     protected $client;
 
-	/**
-	 * Request constructor.
-	 *
-	 * @param Airtable $airtable
-	 */
-	public function __construct(Airtable $airtable)
-	{
-		$this->airtable = $airtable;
+    /**
+     * Request constructor.
+     *
+     * @param Airtable $airtable
+     */
+    public function __construct(Airtable $airtable)
+    {
+        $this->airtable = $airtable;
 
-		// Initialize Guzzle client
-		$this->client = new Client(
-			[
-				'base_uri' => $this->getRequestUrl(),
-				'headers'  => [
-					'Authorization' => sprintf('Bearer %s', $airtable->getApiKey())
-				]
-			]
-		);
-	}
+        // Initialize Guzzle client
+        $this->client = new Client(
+            [
+                'base_uri' => $this->getRequestUrl(),
+                'headers' => [
+                    'Authorization' => sprintf('Bearer %s', $airtable->getApiKey())
+                ]
+            ]
+        );
+    }
 
-	/**
-	 * @return string
-	 */
-	abstract protected function getRequestUrl(): string;
+    /**
+     * @return string
+     */
+    abstract protected function getRequestUrl(): string;
 }
