@@ -9,143 +9,40 @@ use GuzzleHttp\Client;
  *
  * @package DavidZadrazil
  */
-class Request
+abstract class Request
 {
-	/**
-	 * @var Airtable
-	 */
-	private $airtable;
+    /**
+     * @var Airtable
+     */
+    protected $airtable;
 
-	/**
-	 * @var string
-	 */
-	private $table;
+    /**
+     * @var Client
+     */
+    protected $client;
 
-	/**
-	 * @var Client
-	 */
-	private $client;
+    /**
+     * Request constructor.
+     *
+     * @param Airtable $airtable
+     */
+    public function __construct(Airtable $airtable)
+    {
+        $this->airtable = $airtable;
 
-	/**
-	 * @var null|string
-	 */
-	private $offset = null;
+        // Initialize Guzzle client
+        $this->client = new Client(
+            [
+                'base_uri' => $this->getRequestUrl(),
+                'headers' => [
+                    'Authorization' => sprintf('Bearer %s', $airtable->getApiKey())
+                ]
+            ]
+        );
+    }
 
-	/**
-	 * @var array
-	 */
-	private $parameters = [];
-
-
-	/**
-	 * Request constructor.
-	 *
-	 * @param Airtable $airtable
-	 * @param $table
-	 */
-	public function __construct(Airtable $airtable, $table)
-	{
-		$this->airtable = $airtable;
-		$this->table = $table;
-
-		// Initialize Guzzle client
-		$this->client = new Client(
-			[
-				'base_uri' => $this->getRequestUrl(),
-				'headers'  => [
-					'Authorization' => sprintf('Bearer %s', $airtable->getApiKey())
-				]
-			]
-		);
-	}
-
-	/**
-	 * Create new entry in record
-	 *
-	 * @param array $record
-	 *
-	 * @return Response
-	 */
-	public function createRecord(array $record)
-	{
-		$response = $this->client->request('POST', '', ['json' => ['fields' => $record]]);
-		return new Response($response, $this);
-	}
-
-	/**
-	 * Update existing record
-	 *
-	 * @param $id
-	 * @param array $record
-	 *
-	 * @return Response
-	 */
-	public function updateRecord($id, array $record)
-	{
-		$response = $this->client->request('PATCH', $this->getRequestUrl() . '/' . $id, ['json' => ['fields' => $record]]);
-		return new Response($response, $this);
-	}
-
-	/**
-	 * Delete existring record
-	 *
-	 * @param $id
-	 *
-	 * @return Response
-	 */
-	public function deleteRecord($id)
-	{
-		$response = $this->client->request('DELETE', $this->getRequestUrl() . '/' . $id);
-		return new Response($response, $this);
-	}
-
-	/**
-	 * Get records from table
-	 *
-	 * @param array $parameters
-	 *
-	 * @return Response
-	 */
-	public function getTable($parameters = [])
-	{
-		$this->parameters = $parameters;
-
-		$response = $this->client->request('GET', '?' . http_build_query($parameters));
-		return new Response($response, $this);
-	}
-
-	/**
-	 * @return string
-	 */
-	private function getRequestUrl(): string
-	{
-		return $this->airtable->getBaseUrl() . '/' . $this->airtable->getBase() . '/' . $this->table;
-	}
-
-	/**
-	 * @return null|string
-	 */
-	public function getOffset()
-	{
-		return $this->offset;
-	}
-
-	/**
-	 * @param null|string $offset
-	 *
-	 * @return $this
-	 */
-	public function setOffset($offset)
-	{
-		$this->offset = $offset;
-		return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getParameters(): array
-	{
-		return $this->parameters;
-	}
+    /**
+     * @return string
+     */
+    abstract protected function getRequestUrl(): string;
 }
